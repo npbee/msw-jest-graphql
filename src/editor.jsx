@@ -7,6 +7,7 @@ let query = `
     post(id: $id) {
       id,
       title,
+      likes
     }
   }
 `;
@@ -20,24 +21,6 @@ let mutation = `
   }
 `;
 
-export function Viewer(props) {
-  let { id } = props;
-  let [res] = useQuery({
-    query,
-    variables: { id },
-  });
-  if (res.fetching) return "Loading...";
-  if (res.error) return <p>Error!</p>;
-  let { post } = res.data;
-
-  return (
-    <div>
-      <h2>Post</h2>
-      <h3>{post.title}</h3>
-    </div>
-  );
-}
-
 export function Editor(props) {
   let { id } = props;
   let [res] = useQuery({
@@ -47,7 +30,12 @@ export function Editor(props) {
   if (res.fetching) return "Loading...";
   if (res.error) return <p>Error!</p>;
 
-  return <Form {...res.data} />;
+  return (
+    <div>
+      <Form post={res.data.post} />
+      <Likes likes={res.data.post.likes} />
+    </div>
+  );
 }
 
 function Form(props) {
@@ -67,10 +55,7 @@ function Form(props) {
     });
   };
 
-  let currentState = React.useRef(state);
-
   let isMounted = React.useRef(false);
-
   React.useEffect(() => {
     if (isMounted.current) {
       save(state);
@@ -94,4 +79,14 @@ function Form(props) {
       </form>
     </div>
   );
+}
+
+function Likes(props) {
+  let { likes } = props;
+
+  if (!likes) {
+    throw new Error("No likes provided!");
+  }
+
+  return <span>This post has {likes} likes.</span>;
 }

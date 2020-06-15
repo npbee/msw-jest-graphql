@@ -5,18 +5,26 @@
   "license": "MIT",
   "scripts": {
     "start": "parcel serve src/index.html",
-    "build": "parcel build src/index.html"
+    "build": "parcel build src/index.html",
+    "test": "jest"
   },
   "dependencies": {
-    "@urql/devtools": "^2.0.2",
+    "@graphql-tools/mock": "^6.0.10",
+    "@testing-library/react": "^10.2.1",
     "@urql/exchange-graphcache": "^3.0.0",
-    "graphql-tools": "^6.0.10",
+    "graphql": "^15.1.0",
     "jest": "^26.0.1",
+    "lodash": "^4.17.15",
     "msw": "^0.19.3",
     "parcel": "^2.0.0-alpha.3.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "urql": "^1.9.8",
     "use-debounce": "^3.4.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/preset-react": "^7.10.1",
+    "whatwg-fetch": "^3.0.0"
   }
 }
