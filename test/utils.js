@@ -13,14 +13,19 @@ export { server };
 
 /**
  * Some wrappers around `msw` graphql handlers. These will:
- *
- *   - Take a function that resolves to the response. This
  */
 export let graphql = {
   async resolve(req, res, ctx, createMockData) {
     let { query, variables } = req.body;
+
+    // Get the full query response for this from our mocked schema
     let response = await gql(schema, query, {}, {}, variables);
+
+    // Create the mock response for this particular request
+    // Pass in the variables for convenience
     let mockData = createMockData(variables);
+
+    // Merge the two together with the mock data taking precendence
     let finalResponse = merge(
       {},
       response,
