@@ -1,0 +1,22 @@
+{
+  "name": "msw-jest-graphql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel serve src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "dependencies": {
+    "@urql/devtools": "^2.0.2",
+    "@urql/exchange-graphcache": "^3.0.0",
+    "graphql-tools": "^6.0.10",
+    "jest": "^26.0.1",
+    "msw": "^0.19.3",
+    "parcel": "^2.0.0-alpha.3.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "urql": "^1.9.8",
+    "use-debounce": "^3.4.2"
+  }
+}
