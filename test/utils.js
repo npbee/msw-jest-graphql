@@ -3,11 +3,12 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { graphql as mswGraphql, context } from "msw";
 import { graphql as gql } from "graphql";
-import { server } from "../mocks/server";
-import { schema } from "../mocks/graphql";
+import { server } from "./server/server";
+import { schema } from "./server/graphql";
 import { Provider, createClient } from "src/client";
 import { Editor } from "src/editor";
 
+export { db } from "./server/db";
 export * from "@testing-library/react";
 export { server };
 
@@ -50,11 +51,14 @@ export let graphql = {
 };
 
 export async function renderEditor(props) {
-  let update = jest.fn(variables => ({
-    post: variables,
-  }));
+  let update;
+  if (props.dontMock !== true) {
+    update = jest.fn(variables => ({
+      post: variables,
+    }));
 
-  server.use(graphql.mutation("UpdatePost", update));
+    server.use(graphql.mutation("UpdatePost", update));
+  }
 
   // Need to have a fresh client for each run, otherwise we'll share a cache!
   render(
