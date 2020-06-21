@@ -5,12 +5,12 @@ import { graphql as mswGraphql, context } from "msw";
 import { graphql as gql } from "graphql";
 import { server } from "./server/server";
 import { schema } from "./server/graphql";
-import { Provider, createClient } from "src/client";
-import { Editor } from "src/editor";
+import userEvent from "@testing-library/user-event";
+import { Form, List } from "src/tweeter.jsx";
 
 export { db } from "./server/db";
 export * from "@testing-library/react";
-export { server };
+export { server, userEvent };
 
 /**
  * Some wrappers around `msw` graphql handlers. These will:
@@ -44,28 +44,15 @@ export let graphql = {
     });
   },
   mutation(operationName, testResolver) {
-    return mswGraphql.mutation(operationName, async (req, res, ctx) => {
-      return graphql.resolve(req, res, ctx, testResolver);
-    });
+    return mswGraphql.mutation(operationName, testResolver);
   },
 };
 
-export async function renderEditor(props) {
-  let update;
-  if (props.dontMock !== true) {
-    update = jest.fn(variables => ({
-      post: variables,
-    }));
-
-    server.use(graphql.mutation("UpdatePost", update));
-  }
-
-  // Need to have a fresh client for each run, otherwise we'll share a cache!
+export async function renderTweeter(props) {
   render(
-    <Provider client={createClient()}>
-      <Editor {...props} />
-    </Provider>
+    <>
+      <Form />
+      <List />
+    </>
   );
-
-  return { update };
 }

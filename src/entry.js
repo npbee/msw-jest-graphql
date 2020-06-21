@@ -1,6 +1,6 @@
 import * as React from "react";
 import ReactDOM from "react-dom";
-import { Editor } from "./editor";
+import { Form, List } from "./tweeter";
 import { Provider, createClient } from "./client";
 
 async function bootstrap() {
@@ -10,7 +10,8 @@ async function bootstrap() {
   }
   ReactDOM.render(
     <Provider client={createClient()}>
-      <Editor id="1" />
+      <Form />
+      <List />
     </Provider>,
     document.getElementById("root")
   );

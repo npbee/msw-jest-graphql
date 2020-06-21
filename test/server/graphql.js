@@ -1,22 +1,19 @@
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { addMocksToSchema } from "@graphql-tools/mock";
+import { buildSchema } from "graphql";
 
 let schemaString = `
-type Post {
+type Tweet {
   id: ID!,
-  title: String!
+  body: String!
   likes: Int!
 }
 
 type Query {
-  post(id: ID!): Post
+  tweets: [Tweet!]!
 }
 
 type Mutation {
-  updatePost(id: ID!, title: String!): Post
+  createTweet(body: String!): Tweet
 }
 `;
 
-export let schema = addMocksToSchema({
-  schema: makeExecutableSchema({ typeDefs: schemaString }),
-});
+export let schema = buildSchema(schemaString);

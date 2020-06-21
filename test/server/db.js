@@ -2,21 +2,38 @@ let id = 0;
 let makeId = () => (id += 1);
 
 let data = {
-  posts: {},
+  tweet: {},
+};
+
+let factories = {
+  tweet: tweet => ({
+    title: "A Post",
+    likes: 0,
+    ...tweet,
+  }),
 };
 
 export let db = {
+  clear() {
+    data = {
+      tweet: {},
+    };
+  },
   create(model, attrs) {
     let id = makeId();
 
-    let post = {
+    let thing = {
       id,
       ...attrs,
     };
 
-    data[model][id] = post;
+    if (factories[model]) {
+      thing = factories[model](thing);
+    }
 
-    return post;
+    data[model][id] = thing;
+
+    return thing;
   },
 
   get(model, id) {
@@ -27,11 +44,15 @@ export let db = {
     }
   },
 
+  getAll(model) {
+    return Object.values(data[model] || {});
+  },
+
   update(model, id, attrs) {
     let item = db.get(model, id);
 
     if (!item) {
-      throw new Error("Trying to get an item that doesn't exist");
+      throw new Error("Trying to update an item that doesn't exist");
     }
 
     item = {

@@ -3,19 +3,14 @@ import { rest } from "msw";
 import { schema } from "./graphql";
 import { db } from "./db";
 
-let resolvers = {
-  post(_root, args, context) {
-    let { id } = args;
+let root = {
+  tweets(args, context) {
     let { db } = context;
-    return db.get("posts", id);
+    return db.getAll("tweet");
   },
-  updatePost(_root, args, context) {
-    let { id, title } = args;
+  createTweet(args, context) {
     let { db } = context;
-    db.update("posts", id, {
-      title,
-    });
-    return db.get("posts", id);
+    return db.create("tweet", { body: args.body });
   },
 };
 
@@ -23,9 +18,12 @@ export let handlers = [
   rest.post("/api/graphql", async (req, res, ctx) => {
     let { query, variables } = req.body;
     let context = { db };
-    let response = await graphql(schema, query, resolvers, context, variables);
+    let response = await graphql(schema, query, root, context, variables);
 
-    return res(ctx.delay(500), ctx.status(200), ctx.json(response));
-    //
+    if (response.errors) {
+      console.error(response.errors[0]);
+    }
+
+    return res(ctx.delay(100), ctx.status(200), ctx.json(response));
   }),
 ];
