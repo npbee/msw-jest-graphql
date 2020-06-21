@@ -18,13 +18,23 @@ let createTweetMutation = `
   mutation CreateTweet($body: String!) {
     createTweet(body: $body) {
       id,
-      body
+    }
+  }
+`;
+
+let likeTweetMutation = `
+  mutation LikeTweet($id: ID!) {
+    likeTweet(id: $id) {
+      id,
+      likes
     }
   }
 `;
 
 export function List() {
-  let { status, data } = useQuery("tweets", () => client.request(tweetsQuery));
+  let { status, data } = useQuery("tweets", () => {
+    return client.request(tweetsQuery);
+  });
   if (status === "loading") return "Loading...";
   if (status === "error") return <p>Error!</p>;
 
@@ -36,10 +46,29 @@ export function List() {
       {tweets.map(tweet => (
         <div key={tweet.id}>
           <h3>{tweet.body}</h3>
-          <p>{tweet.likes}</p>
+          <Likes likes={tweet.likes} id={tweet.id} />
         </div>
       ))}
     </div>
+  );
+}
+
+function Likes({ likes, id }) {
+  let [mutate, { status }] = useMutation(
+    () =>
+      client.request(likeTweetMutation, {
+        id,
+      }),
+    {
+      onSuccess: () => queryCache.refetchQueries("tweets"),
+    }
+  );
+  let pluralized = likes === 1 ? false : true;
+
+  return (
+    <button onClick={mutate} disabled={status === "loading"}>
+      {likes} {pluralized ? "likes" : "like"}
+    </button>
   );
 }
 

@@ -1,6 +1,6 @@
 import {
   server,
-  renderTweeter,
+  renderForm,
   screen,
   graphql,
   waitFor,
@@ -18,7 +18,7 @@ afterAll(() => {
 });
 
 test("Can create a new tweet", async () => {
-  await renderTweeter();
+  await renderForm();
   await screen.findByText("Create a new Tweet");
 
   let textarea = screen.getByLabelText("Body");
@@ -31,7 +31,6 @@ test("Can create a new tweet", async () => {
 
   let newTweet = db.getAll("tweet")[0];
   expect(newTweet.body).toBe("LOL");
-  expect(screen.queryByText("LOL")).toBeInTheDocument();
 });
 
 test("Handles errors", async () => {
@@ -42,7 +41,7 @@ test("Handles errors", async () => {
     })
   );
 
-  await renderTweeter();
+  await renderForm();
   await screen.findByText("Create a new Tweet");
 
   let textarea = screen.getByLabelText("Body");

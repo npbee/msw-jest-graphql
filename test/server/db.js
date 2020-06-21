@@ -1,13 +1,14 @@
-let id = 0;
-let makeId = () => (id += 1);
+import faker from "faker";
 
-let data = {
-  tweet: {},
-};
+let data = createDatabase();
+
+function createDatabase() {
+  return new Map([["tweet", new Map()]]);
+}
 
 let factories = {
   tweet: tweet => ({
-    title: "A Post",
+    body: "A toot!",
     likes: 0,
     ...tweet,
   }),
@@ -15,12 +16,10 @@ let factories = {
 
 export let db = {
   clear() {
-    data = {
-      tweet: {},
-    };
+    data = createDatabase();
   },
   create(model, attrs) {
-    let id = makeId();
+    let id = faker.random.uuid();
 
     let thing = {
       id,
@@ -31,36 +30,29 @@ export let db = {
       thing = factories[model](thing);
     }
 
-    data[model][id] = thing;
+    data.get(model).set(id, thing);
 
     return thing;
   },
 
   get(model, id) {
-    let items = data[model];
-
-    if (items) {
-      return items[id];
-    }
+    return data.get(model).get(id);
   },
 
   getAll(model) {
-    return Object.values(data[model] || {});
+    return [...data.get(model).values()];
   },
 
-  update(model, id, attrs) {
+  update(model, id, updater) {
     let item = db.get(model, id);
 
     if (!item) {
       throw new Error("Trying to update an item that doesn't exist");
     }
 
-    item = {
-      ...item,
-      ...attrs,
-    };
+    item = updater(item);
 
-    data[model][id] = item;
+    data.get(model).set(id, item);
 
     return item;
   },
