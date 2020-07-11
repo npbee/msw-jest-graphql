@@ -9,6 +9,8 @@ import {
 } from "test/utils";
 
 beforeAll(() => {
+  // This is because `graphql-query` logs errors. I don't want them in my
+  // tests. I can probably disable these somehow but haven't figured it out.
   jest.spyOn(console, "error").mockImplementation(() => {});
 });
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import { graphql } from "msw";
-import { server } from "./server/server";
+import { server, handleGraphQLResponse } from "./server/server";
 import userEvent from "@testing-library/user-event";
 import { Form, List } from "src/tweeter.jsx";
 
@@ -18,4 +18,10 @@ export function renderForm() {
 
 export function renderList() {
   render(<List />);
+}
+
+export function useMockedQuery(operationName, createPartialResponse) {
+  server.use(
+    graphql.query(operationName, handleGraphQLResponse(createPartialResponse))
+  );
 }

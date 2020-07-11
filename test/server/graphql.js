@@ -46,9 +46,8 @@ export async function resolve(query, variables) {
   let context = { db };
   let response = await graphql(schema, query, root, context, variables);
 
-  if (response.errors) {
-    // eslint-disable-next-line no-console
-    console.error(response.errors[0]);
+  if (response.errors && process.env.STRICT_GRAPHQL) {
+    throw new Error(response.errors[0]);
   }
 
   return response;
